@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canvas1</title>
+	<style>
+		* { margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+		.box { width: 1200px; height: 675px; margin: 0 auto; position: relative; cursor: default; overflow: hidden; }
+		.box img { filter: blur(30px); -webkit-filter: blur(30px); position: absolute; top: 0; left: 0;  }
+		#canvas { position: absolute; top: 0; left: 0; z-index: 100;  }
+	</style>
+</head>
+<body>
+	<div class="box">
+		<img src="images/img-original.jpg" alt="" id="blur">
+		<img src="images/original.jpg" alt="" id="clear" style="display: none;">
+		<canvas id="canvas">你的浏览器不支持canvas</canvas>
+	</div>
+	<div style="text-align: center;">摩擦图片能看清楚</div>
+</body>
+<script src="js/jquery-1.12.2.js"></script>
+<script>
+	window.onload = function() {
+		var canvasWidth = 1200,
+		canvasHeight = 675,
+		isMouseDown = false,
+		lastLocation = {},
+		curLocation = {};
+
+		var canvas = document.getElementById("canvas");
+		var context = canvas.getContext("2d");
+
+		canvas.width = canvasWidth;
+		canvas.height = canvasHeight;
+
+		var image = document.getElementById("clear");
+
+		var pattern = context.createPattern(image, "no-repeat");
+
+		$("#canvas").mousedown(function(e) {
+			e.preventDefault();
+			isMouseDown = true;
+			lastLocation = canvasPostion(e.clientX, e.clientY);
+		});
+		$("#canvas").mouseup(function(e) {
+			e.preventDefault();
+			isMouseDown = false;
+		});
+		$("#canvas").mousemove(function(e) {
+			e.preventDefault();
+			if (isMouseDown) {
+				curLocation = canvasPostion(e.clientX, e.clientY);
+				draw(curLocation);
+			}
+		});
+		$("#canvas").mouseout(function(e) {
+			e.preventDefault();
+			isMouseDown = false;
+		});
+
+
+		function canvasPostion(x,y) {
+			var offset = $("#canvas").offset();
+			return {x:Math.round(x - offset.left),y:Math.round(y - offset.top)};
+		}
+
+		function draw(curLocation) {
+			// context.clearRect(0,0,canvas.width,canvas.height);
+			context.save();
+			getDrawIine(curLocation);
+			context.restore();
+		}
+
+		function getDrawIine(curLocation) {
+			context.beginPath();
+			context.moveTo(lastLocation.x,lastLocation.y);
+			context.lineTo(curLocation.x,curLocation.y);
+
+			context.lineWidth = 70;
+			context.strokeStyle = pattern;
+			context.lineCap = "round";
+			context.lineJoin = 'round';
+
+			context.stroke();
+			lastLocation = curLocation;
+		}
+	}
+</script>
+</html>
