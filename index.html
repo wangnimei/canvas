@@ -18,7 +18,7 @@
 	</div>
 	<div style="text-align: center;">摩擦图片能看清楚</div>
 </body>
-<script src="js/jquery-1.12.2.js"></script>
+<script src="js/jquery-3.1.1.min.js"></script>
 <script>
 	window.onload = function() {
 		var canvasWidth = 1200,
@@ -27,7 +27,7 @@
 		lastLocation = {},
 		curLocation = {};
 
-		var canvas = document.getElementById("canvas");
+		var canvas = $('canvas')[0];
 		var context = canvas.getContext("2d");
 
 		canvas.width = canvasWidth;
@@ -42,10 +42,12 @@
 			isMouseDown = true;
 			lastLocation = canvasPostion(e.clientX, e.clientY);
 		});
+
 		$("#canvas").mouseup(function(e) {
 			e.preventDefault();
 			isMouseDown = false;
 		});
+
 		$("#canvas").mousemove(function(e) {
 			e.preventDefault();
 			if (isMouseDown) {
@@ -53,6 +55,7 @@
 				draw(curLocation);
 			}
 		});
+
 		$("#canvas").mouseout(function(e) {
 			e.preventDefault();
 			isMouseDown = false;
